@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>India's Manufacturing Industry: Who Creates Value, Jobs and Productivity? (ASI Data)</title>
+<meta name="description" content="Python analysis of ASI data for 28 Indian manufacturing industries. Food Products employs the most workers but ranks 6th in net value added; Basic Metals ranks 1st.">
+<!-- Replace YOUR-USERNAME and YOUR-REPO below -->
+<meta property="og:type" content="website">
+<meta property="og:title" content="India's Manufacturing Industry: Who Creates Value, Jobs and Productivity?">
+<meta property="og:description" content="Python analysis of ASI data for 28 industries. The biggest employer (Food Products) ranks 6th in net value added; Basic Metals ranks 1st.">
+<meta property="og:image" content="https://YOUR-USERNAME.github.io/YOUR-REPO/images/cover.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="627">
+<meta property="og:url" content="https://YOUR-USERNAME.github.io/YOUR-REPO/">
+<meta property="og:site_name" content="india-manufacturing-asi">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#0b1220;--mute:#5b6577;--line:#e4e8f1;--pri:#4338ca;--cy:#06b6d4;--soft:#d9def5;--ora:#ea580c;--r:18px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.65 "Plus Jakarta Sans",system-ui,sans-serif}
+a{color:var(--pri)}
+.wrap{max-width:1040px;margin:0 auto;padding:0 22px}
+nav{position:sticky;top:0;z-index:5;background:rgba(244,246,251,.85);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+nav .wrap{display:flex;gap:6px;align-items:center;height:56px;overflow-x:auto}
+nav b{margin-right:auto;white-space:nowrap;font-weight:800}
+nav a{padding:6px 12px;border-radius:99px;text-decoration:none;color:var(--mute);font-size:.9rem;white-space:nowrap}
+nav a:hover{background:#e8ebf6;color:var(--ink)}
+.hero{padding:64px 0 28px;display:grid;grid-template-columns:1.25fr 1fr;gap:36px;align-items:center}
+.tag{display:inline-block;padding:5px 12px;border-radius:99px;background:#e6e8fb;color:var(--pri);font-weight:600;font-size:.82rem}
+h1{font-size:clamp(2rem,4.6vw,3.3rem);line-height:1.08;letter-spacing:-.03em;font-weight:800;margin:16px 0 14px}
+h2{font-size:1.7rem;letter-spacing:-.02em;font-weight:800;margin:0 0 6px}
+h3{font-size:1.02rem;margin:0 0 4px}
+p{margin:.4rem 0}
+.mute{color:var(--mute)}
+.lead{font-size:1.1rem;color:var(--mute);max-width:52ch}
+.tiles{display:grid;gap:12px}
+.tile{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:16px 20px;box-shadow:0 8px 24px -16px rgba(40,50,120,.35)}
+.tile b{display:block;font-size:1.55rem;letter-spacing:-.02em;font-weight:800}
+.tile span{font-size:.88rem;color:var(--mute)}
+.tile.a{border-left:5px solid var(--pri)}.tile.b{border-left:5px solid var(--ora)}.tile.c{border-left:5px solid var(--cy)}
+section{padding:36px 0}
+.card{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:26px;box-shadow:0 8px 24px -18px rgba(40,50,120,.35)}
+.three{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px}
+.three .card{padding:20px}
+.three .card strong{color:var(--pri)}
+.toggle{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 4px}
+.toggle button{font:600 .88rem "Plus Jakarta Sans",sans-serif;padding:9px 16px;border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:99px;cursor:pointer;transition:background .15s}
+.toggle button:hover{background:#eef0fb}
+.toggle button[aria-pressed=true]{background:var(--pri);border-color:var(--pri);color:#fff}
+button:focus-visible,.pt:focus-visible{outline:3px solid var(--cy);outline-offset:2px}
+#note{background:#eef0fb;border-radius:12px;padding:12px 16px;margin:12px 0 14px;min-height:3.6em}
+.row{display:grid;grid-template-columns:minmax(120px,230px) 1fr 70px;gap:12px;align-items:center;padding:4px 0;font-size:.92rem}
+.lab{text-align:right;line-height:1.25;color:var(--mute)}
+.track{height:24px;background:#eef1f8;border-radius:99px;overflow:hidden}
+.fill{height:100%;border-radius:99px;background:var(--soft);transition:width .5s cubic-bezier(.2,.8,.2,1)}
+.row:first-child .fill{background:linear-gradient(90deg,var(--pri),var(--cy))}
+.row.on .fill{background:var(--pri)}
+.row.on .lab{color:var(--ink);font-weight:600}
+.val{font-weight:600;font-variant-numeric:tabular-nums}
+#tip{position:fixed;pointer-events:none;background:var(--ink);color:#fff;padding:8px 12px;border-radius:10px;font-size:.85rem;line-height:1.4;max-width:240px;opacity:0;transition:opacity .1s;z-index:9}
+svg{width:100%;height:auto;display:block}
+svg text{font:12.5px "Plus Jakarta Sans",sans-serif;fill:var(--ink)}
+svg .ax{fill:var(--mute);font-size:11.5px}
+.pt{cursor:pointer}
+.scroll{overflow-x:auto}
+table{border-collapse:separate;border-spacing:0;width:100%;font-size:.93rem;margin-top:14px}
+th,td{padding:11px 12px;text-align:center;border-bottom:1px solid var(--line)}
+th:first-child,td:first-child{text-align:left;font-weight:600}
+th{color:var(--mute);font-weight:600;font-size:.82rem}
+td.hi{color:#0f766e;font-weight:800}td.hi span,td.lo span{display:inline-block;min-width:28px;padding:2px 8px;border-radius:99px}
+td.hi span{background:#d5f3ef}td.lo span{background:#ffe6d6;color:var(--ora);font-weight:800}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+ul{padding-left:1.1em;margin:.5rem 0}li{margin:.45rem 0}
+footer{padding:26px 0 60px;color:var(--mute);font-size:.9rem}
+@media(max-width:760px){.hero{grid-template-columns:1fr;padding-top:36px}.three,.two{grid-template-columns:1fr}.row{grid-template-columns:96px 1fr 58px;font-size:.82rem}.card{padding:18px}}
+@media(prefers-reduced-motion:reduce){.fill{transition:none}html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<nav><div class="wrap"><b>India's manufacturing · ASI</b><a href="#findings">Findings</a><a href="#explore">Explore</a><a href="#scatter-s">Jobs vs value</a><a href="#ranks">Rank shifts</a><a href="#method">Method</a></div></nav>
+
+<div class="wrap">
+<header class="hero">
+<div>
+<span class="tag">Python · ASI data · 28 industries</span>
+<h1>Who creates value, jobs and productivity in Indian manufacturing?</h1>
+<p class="lead">No industry leads on every measure. The biggest employers add the least value per worker.</p>
+<p class="mute" style="font-size:.92rem;margin-top:14px"><strong style="color:var(--ink)">[Your Name]</strong> · ASI [year] · <a href="https://github.com/YOUR-USERNAME/YOUR-REPO">Code on GitHub</a></p>
+</div>
+<div class="tiles">
+<div class="tile a"><b>Basic Metals</b><span>Highest net value added: ₹2.34 lakh crore</span></div>
+<div class="tile b"><b>Food Products</b><span>Most workers: 1.68 million, but 6th in value added</span></div>
+<div class="tile c"><b>Coke &amp; Petroleum</b><span>Highest value added per worker: ₹95.6 lakh</span></div>
+</div>
+</header>
+
+<section id="findings">
+<h2>The three questions</h2>
+<div class="three">
+<div class="card"><h3>Which industry adds the most value?</h3><p><strong>Basic Metals</strong>, then Motor Vehicles, Chemicals, Pharmaceuticals and Machinery.</p></div>
+<div class="card"><h3>Which industry employs the most people?</h3><p><strong>Food Products</strong>, then Textiles, Basic Metals and Wearing Apparel.</p></div>
+<div class="card"><h3>Which have high output and productivity?</h3><p><strong>Basic Metals, Chemicals and Coke &amp; Petroleum</strong> are top five on both output and output per worker.</p></div>
+</div>
+</section>
+
+<section id="explore"><div class="card">
+<h2>Explore the rankings</h2>
+<p class="mute">Choose a measure and hover over a bar. Top 10 industries.</p>
+<div class="toggle" role="group" aria-label="Choose measure">
+<button data-m="nva" aria-pressed="true">Net value added</button>
+<button data-m="emp" aria-pressed="false">Employment</button>
+<button data-m="out" aria-pressed="false">Output</button>
+<button data-m="opw" aria-pressed="false">Output per worker</button>
+<button data-m="vpw" aria-pressed="false">Value added per worker</button>
+</div>
+<p id="note"></p>
+<div id="chart" aria-live="polite"></div>
+</div></section>
+
+<section id="scatter-s"><div class="card">
+<h2>More workers does not mean more value</h2>
+<p class="mute">Net value added against employment for the ten largest value-adding industries.</p>
+<div id="scatter"></div>
+</div></section>
+
+<section id="ranks"><div class="card">
+<h2>Rankings change with the measure</h2>
+<p class="mute">Output includes raw-material costs, so output per worker and value added per worker can disagree. A dash means outside the top 10.</p>
+<div class="scroll"><table>
+<thead><tr><th>Industry</th><th>Value added</th><th>Employment</th><th>Output</th><th>Output / worker</th><th>Value added / worker</th></tr></thead>
+<tbody>
+<tr><td>Basic Metals</td><td class="hi"><span>1</span></td><td>3</td><td class="hi"><span>1</span></td><td>3</td><td class="lo"><span>7</span></td></tr>
+<tr><td>Food Products</td><td class="lo"><span>6</span></td><td class="hi"><span>1</span></td><td>2</td><td>6</td><td>–</td></tr>
+<tr><td>Coke &amp; Petroleum</td><td>7</td><td>–</td><td>3</td><td class="hi"><span>1</span></td><td class="hi"><span>1</span></td></tr>
+<tr><td>Pharmaceuticals</td><td>4</td><td>–</td><td>–</td><td>–</td><td class="hi"><span>2</span></td></tr>
+<tr><td>Motor Vehicles</td><td>2</td><td>5</td><td>4</td><td>7</td><td>9</td></tr>
+</tbody></table></div>
+</div></section>
+
+<section><div class="two">
+<div class="card"><h2>What this suggests</h2>
+<ul>
+<li>Top value adders (metals, vehicles, chemicals, pharma) are heavier on capital and skills. This is consistent with Kochhar et al. (2006).</li>
+<li>Food, textiles and apparel absorb many workers at low value per worker, consistent with a labour-intensive, low-productivity base.</li>
+<li>Coke &amp; Petroleum's output per worker is inflated by crude oil costs. It stays first on value added per worker, but the gap narrows sharply.</li>
+<li>Pharmaceuticals ranks 2nd on value added per worker, consistent with a knowledge-intensive industry. This study has no R&amp;D or skills data to test that.</li>
+</ul></div>
+<div class="card" id="method"><h2>Method and limits</h2>
+<p><strong>Method.</strong> ASI [year] industry totals in ₹ lakh. Productivity is output or net value added divided by workers. Built in Python (pandas, matplotlib).</p>
+<ul>
+<li>ASI covers registered factories only, so informal manufacturing is excluded (Kathuria, Raj and Sen 2010).</li>
+<li>One year of industry totals shows association, not cause. Testing misallocation needs plant-level data (Hsieh and Klenow 2009).</li>
+<li>Small industries such as Publishing (about 11,000 workers) can look extreme per worker.</li>
+<li>Next steps: capital per worker, wage share, several ASI years.</li>
+</ul></div>
+</div></section>
+
+<footer>
+<p>Source: Annual Survey of Industries, MoSPI, Government of India. Ratios and shares are my calculations from industry totals.</p>
+<p><strong style="color:var(--ink)">[Your Name]</strong> · <a href="https://www.linkedin.com/in/YOUR-PROFILE">LinkedIn</a> · <a href="https://github.com/YOUR-USERNAME/YOUR-REPO">GitHub</a></p>
+</footer>
+</div>
+
+<div id="tip" role="tooltip"></div>
+<script>
+// NVA and output in ₹ lakh crore (1 lakh crore = 1e7 lakh); employment in thousands; productivity in ₹ lakh per worker
+var M={
+nva:{unit:"₹ lakh crore",dec:2,note:"Basic Metals adds the most net value. Pharmaceuticals ranks 4th with far fewer workers than metals or food.",rows:[["Basic Metals",2.34],["Motor Vehicles, Trailers",1.90],["Chemicals",1.85],["Pharmaceuticals",1.61],["Machinery n.e.c.",1.55],["Food Products",1.54],["Coke & Petroleum",1.28],["Electrical Equipment",1.06],["Other Industries",0.96],["Non-metallic Minerals",0.95]]},
+emp:{unit:"thousand workers",dec:0,note:"Food Products employs the most people. Textiles and Wearing Apparel rank 2nd and 4th for jobs but miss the value-added top ten.",rows:[["Food Products",1681],["Textiles",1453],["Basic Metals",1243],["Wearing Apparel",1154],["Motor Vehicles, Trailers",1109],["Non-metallic Minerals",922],["Machinery n.e.c.",914],["Chemicals",851],["Rubber & Plastics",836],["Electrical Equipment",672]]},
+out:{unit:"₹ lakh crore",dec:1,note:"Basic Metals, Food and Coke & Petroleum produce the most output. Output counts raw materials, so it overstates value creation in refining and food.",rows:[["Basic Metals",22.2],["Food Products",20.3],["Coke & Petroleum",18.7],["Motor Vehicles, Trailers",13.0],["Chemicals",12.4],["Machinery n.e.c.",7.7],["Electrical Equipment",6.6],["Textiles",5.6],["Rubber & Plastics",5.6],["Non-metallic Minerals",5.2]]},
+opw:{unit:"₹ lakh per worker",dec:0,note:"Coke & Petroleum is far ahead mainly because refinery output includes crude oil costs. Treat this measure with care.",rows:[["Coke & Petroleum",1397],["Cotton Ginning & Seed Processing",219],["Basic Metals",179],["Chemicals",146],["Computer & Electronics",143],["Food Products",121],["Motor Vehicles, Trailers",117],["Other Industries",110],["Other Transport Equipment",99],["Electrical Equipment",98]]},
+vpw:{unit:"₹ lakh per worker",dec:1,note:"A cleaner measure. Pharmaceuticals is 2nd, while Food Products and Computer & Electronics drop out of the top ten.",rows:[["Coke & Petroleum",95.6],["Pharmaceuticals",25.7],["Publishing",23.1],["Other Industries",23.1],["Chemicals",21.7],["Other Transport Equipment",20.0],["Basic Metals",18.8],["Beverages",17.1],["Motor Vehicles, Trailers",17.1],["Machinery n.e.c.",16.9]]}
+};
+var tip=document.getElementById("tip");
+function showTip(e,t){tip.innerHTML=t;tip.style.opacity=1;var x=e.clientX+14,y=e.clientY+14;if(x+250>innerWidth)x=e.clientX-250;tip.style.left=x+"px";tip.style.top=y+"px"}
+function hideTip(){tip.style.opacity=0}
+function fmt(v,d){return v.toLocaleString("en-IN",{minimumFractionDigits:d,maximumFractionDigits:d})}
+function draw(k){
+ var m=M[k],max=Math.max.apply(null,m.rows.map(function(r){return r[1]})),h="";
+ m.rows.forEach(function(r,i){
+  h+='<div class="row" data-t="<b>'+r[0]+'</b><br>#'+(i+1)+' · '+fmt(r[1],m.dec)+' '+m.unit+'"><div class="lab">'+r[0]+'</div><div class="track"><div class="fill" data-w="'+(r[1]/max*100)+'" style="width:0"></div></div><div class="val">'+fmt(r[1],m.dec)+'</div></div>';
+ });
+ h+='<p class="mute" style="font-size:.85rem;margin-top:10px">Unit: '+m.unit+'</p>';
+ var c=document.getElementById("chart");c.innerHTML=h;
+ document.getElementById("note").textContent=m.note;
+ requestAnimationFrame(function(){requestAnimationFrame(function(){c.querySelectorAll(".fill").forEach(function(f){f.style.width=f.dataset.w+"%"})})});
+ c.querySelectorAll(".row").forEach(function(el){
+  el.addEventListener("mousemove",function(e){el.classList.add("on");showTip(e,el.dataset.t)});
+  el.addEventListener("mouseleave",function(){el.classList.remove("on");hideTip()});
+ });
+}
+document.querySelectorAll(".toggle button").forEach(function(b){
+ b.addEventListener("click",function(){
+  document.querySelectorAll(".toggle button").forEach(function(x){x.setAttribute("aria-pressed","false")});
+  b.setAttribute("aria-pressed","true");draw(b.dataset.m);
+ });
+});
+draw("nva");
+
+// Scatter: workers (thousand) vs NVA (₹ lakh crore), ten largest NVA industries
+var P=[["Basic Metals",1243,2.34],["Motor Vehicles",1109,1.90],["Chemicals",851,1.85],["Pharma",625,1.61],["Machinery",914,1.55],["Food Products",1681,1.54],["Coke & Petroleum",134,1.28],["Electrical",672,1.06],["Other Industries",414,0.96],["Non-metallic",922,0.95]];
+var L=60,R=640,T=20,B=320;
+function X(v){return L+v/1800*(R-L)}function Y(v){return B-v/2.5*(B-T)}
+var s='<svg viewBox="0 0 680 370" role="img" aria-label="Scatter of net value added against employment">';
+[0,0.5,1,1.5,2,2.5].forEach(function(v){s+='<line x1="'+L+'" x2="'+R+'" y1="'+Y(v)+'" y2="'+Y(v)+'" stroke="#e4e8f1"/><text class="ax" x="'+(L-8)+'" y="'+(Y(v)+4)+'" text-anchor="end">'+v+'</text>'});
+[0,600,1200,1800].forEach(function(v){s+='<text class="ax" x="'+X(v)+'" y="'+(B+20)+'" text-anchor="middle">'+v+'</text>'});
+s+='<text class="ax" x="'+((L+R)/2)+'" y="'+(B+44)+'" text-anchor="middle">Workers (thousand)</text><text class="ax" x="14" y="'+((T+B)/2)+'" text-anchor="middle" transform="rotate(-90 14 '+((T+B)/2)+')">Net value added (₹ lakh crore)</text>';
+P.forEach(function(p){
+ var f=p[0]==="Food Products",c=f?"#ea580c":"#4338ca";
+ s+='<g class="pt" tabindex="0" data-t="<b>'+p[0]+'</b><br>'+fmt(p[1],0)+' thousand workers<br>₹'+fmt(p[2],2)+' lakh crore NVA"><circle cx="'+X(p[1])+'" cy="'+Y(p[2])+'" r="8" fill="'+c+'" stroke="#fff" stroke-width="2"/><text x="'+(f?X(p[1])-13:X(p[1])+12)+'" y="'+(Y(p[2])+4)+'" text-anchor="'+(f?"end":"start")+'">'+p[0]+'</text></g>';
+});
+s+='<text x="'+(X(1681)-13)+'" y="'+(Y(1.54)+22)+'" text-anchor="end" style="fill:#ea580c;font-weight:600">Largest employer, 6th in value added</text></svg>';
+document.getElementById("scatter").innerHTML=s;
+document.querySelectorAll(".pt").forEach(function(g){
+ g.addEventListener("mousemove",function(e){showTip(e,g.dataset.t)});
+ g.addEventListener("mouseleave",hideTip);
+ g.addEventListener("focus",function(){var r=g.getBoundingClientRect();showTip({clientX:r.right,clientY:r.top},g.dataset.t)});
+ g.addEventListener("blur",hideTip);
+});
+</script>
+</body>
+</html>
